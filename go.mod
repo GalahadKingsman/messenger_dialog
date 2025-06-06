@@ -1,4 +1,4 @@
-module messenger_dialog
+module github.com/GalahadKingsman/messenger_dialog
 
 go 1.23.0
 

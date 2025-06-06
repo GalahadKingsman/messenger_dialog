@@ -2,24 +2,25 @@ package dialogservice
 
 import (
 	"context"
-	"database/sql"
+	pb "github.com/GalahadKingsman/messenger_dialog/pkg/messenger_dialog_api"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-func (s *sql.DB) CreateDialog(ctx context.Context, userID, peerID int32) (int32, error) {
-	var dialogID int32
-	err := s.db.QueryRowContext(ctx, `
-		WITH new_dialog AS (
-			INSERT INTO dialogs DEFAULT VALUES RETURNING id
-		),
-		insert_links AS (
-			INSERT INTO user_dialogs_links (user_id, dialog_id)
-			SELECT $1, id FROM new_dialog
-			UNION ALL
-			SELECT $2, id FROM new_dialog
-			RETURNING dialog_id
-		)
-		SELECT dialog_id FROM insert_links LIMIT 1`,
-		userID, peerID).Scan(&dialogID)
+func (s *Service) CreateDialog(ctx context.Context, req *pb.CreateDialogRequest) (*pb.CreateDialogResponse, error) {
+	// Валидация
+	if req.UserId == req.PeerId {
+		return nil, status.Error(codes.InvalidArgument, "нельзя создать диалог с самим собой")
+	}
 
-	return dialogID, err
+	// Вызов слоя БД
+	dialogID, err := s.userRepo.CreateDialog(ctx, req.UserId, req.PeerId)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "ошибка создания диалога")
+	}
+
+	return &pb.CreateDialogResponse{
+		DialogId: dialogID,
+		Success:  true,
+	}, nil
 }
