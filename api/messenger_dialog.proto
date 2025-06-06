@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package dialog;
+
+option go_package = "pkg/messenger_dialog_api";
+
+service DialogService {
+  rpc CreateDialog(CreateDialogRequest) returns (CreateDialogResponse);
+  rpc CheckDialog(CheckDialogRequest) returns (CheckDialogResponse);
+  rpc GetUserDialogs(GetUserDialogsRequest) returns (GetUserDialogsResponse);
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  rpc GetDialogMessages(GetDialogMessagesRequest) returns (GetDialogMessagesResponse);
+}
+
+message Message {
+  int32 id = 1;       // Уникальный ID сообщения
+  int32 sender_id = 2;  // ID отправителя
+  string text = 4;      // Текст сообщения
+  int64 timestamp = 5;  // Время отправки Timestamp
+}
+
+message DialogInfo {
+  int32 dialog_id = 1;    // Уникальный ID диалога
+  int32 peer_id = 2;       // ID собеседника
+  string peer_login = 3;   // Логин собеседника
+  string last_message = 4; // Текст последнего сообщения
+  int64 last_activity = 5; // Timestamp последней активности
+}
+
+message CreateDialogRequest {
+  int32 user_id = 1;        // ID пользователя, который создает диалог
+  int32 peer_id = 2;        // ID собеседника
+}
+
+message CreateDialogResponse {
+  bool success = 1;         // Статус, создан ли диалог
+  int32 dialog_id = 2;      // ID созданного / найденного диалога
+} // если диалог уже создан, то возвращает его ID
+
+message CheckDialogRequest {
+  int32 user_id = 1;      // ID первого пользователя
+  int32 peer_id = 2;      // ID второго пользователя
+}
+
+message CheckDialogResponse {
+  bool exists = 1;        // статус, есть ли диалог
+  int32 dialog_id = 2;    // выведет 0, если диалога нет, если есть, то его ID
+}
+
+message GetUserDialogsRequest {
+  int32 user_id = 1;    // ID пользователя
+  optional int32 limit = 2;   // Сколько диалогов загрузить (опционально)
+  optional int32 offset = 3;    // Сколько диалогов пропустить (опционально)
+}
+
+message GetUserDialogsResponse {
+  repeated DialogInfo dialogs = 1; // список диалогов
+}
+
+message SendMessageRequest {
+  int32 dialog_id = 1;    // ID диалога
+  int32 sender_id = 2;    // ID отправителя
+  string text = 3;        // Текст сообщения
+}
+
+message SendMessageResponse {
+  int32 message_id = 1;   // ID созданного сообщения
+  int64 timestamp = 2;    // Время отправки
+}
+
+message GetDialogMessagesRequest {
+  int32 dialog_id = 1;    // ID диалога
+  int32 login = 2;      // логин пользователя (для проверки доступа)
+  optional int32 limit = 3;     // Сколько сообщение показать (опционально)
+  optional int32 offset = 4;    // Сколько сообщений пропустить (опционально)
+}
+
+message GetDialogMessagesResponse {
+  repeated Message messages = 1;    // Список сообщений
+}
