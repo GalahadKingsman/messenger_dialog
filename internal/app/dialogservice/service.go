@@ -8,11 +8,11 @@ import (
 type Service struct {
 	pb.UnimplementedDialogServiceServer
 
-	userRepo *dialog_repo.Repo
+	dialogRepo *dialog_repo.Repo
 }
 
-func New(userRepo *dialog_repo.Repo) *Service {
+func New(dialogRepo *dialog_repo.Repo) *Service {
 	return &Service{
-		userRepo: userRepo,
+		dialogRepo: dialogRepo,
 	}
 }

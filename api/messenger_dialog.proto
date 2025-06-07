@@ -24,17 +24,18 @@ message DialogInfo {
   int32 peer_id = 2;       // ID собеседника
   string peer_login = 3;   // Логин собеседника
   string last_message = 4; // Текст последнего сообщения
-  int64 last_activity = 5; // Timestamp последней активности
 }
 
 message CreateDialogRequest {
   int32 user_id = 1;        // ID пользователя, который создает диалог
   int32 peer_id = 2;        // ID собеседника
+  string dialog_name = 3;   // Название диалога
 }
 
 message CreateDialogResponse {
   bool success = 1;         // Статус, создан ли диалог
   int32 dialog_id = 2;      // ID созданного / найденного диалога
+  string dialog_name = 3;   // Название диалога
 } // если диалог уже создан, то возвращает его ID
 
 message CheckDialogRequest {

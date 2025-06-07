@@ -1,5 +1,20 @@
 package main
 
-func main() {
+import (
+	"fmt"
+	"github.com/GalahadKingsman/messenger_dialog/internal/app"
+	"github.com/GalahadKingsman/messenger_dialog/internal/config"
+	"github.com/caarlos0/env/v11"
+	"log"
+)
 
+func main() {
+	cfg := &config.Config{}
+	if err := env.Parse(cfg); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Конфиг БД: %+v\n", cfg.DB)
+
+	app.Run(cfg)
 }

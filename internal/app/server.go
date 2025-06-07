@@ -5,6 +5,7 @@ import (
 	"github.com/GalahadKingsman/messenger_dialog/internal/app/dialogservice"
 	"github.com/GalahadKingsman/messenger_dialog/internal/config"
 	"github.com/GalahadKingsman/messenger_dialog/internal/database"
+	"github.com/GalahadKingsman/messenger_dialog/internal/repositories/dialog_repo"
 	"github.com/GalahadKingsman/messenger_dialog/pkg/messenger_dialog_api"
 	"google.golang.org/grpc"
 	"log"
@@ -26,9 +27,9 @@ func Run(config *config.Config) {
 
 	grpcServer := grpc.NewServer(opts...)
 
-	userRepo := user_repo.New(db)
-	service := dialogservice.New(userRepo)
-	messenger_dialog_api.RegisterUserServiceServer(grpcServer, service)
+	dialogRepo := dialog_repo.New(db)
+	service := dialogservice.New(dialogRepo)
+	messenger_dialog_api.RegisterDialogServiceServer(grpcServer, service)
 
 	err = grpcServer.Serve(lis)
 	if err != nil {

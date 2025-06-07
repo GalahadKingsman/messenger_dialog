@@ -1,6 +1,6 @@
 package models
 
-type UserDialogLink struct {
+type UsersDialogLink struct {
 	ID       int
 	UserID   int
 	DialogID int

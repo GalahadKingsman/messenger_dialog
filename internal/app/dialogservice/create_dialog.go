@@ -3,24 +3,33 @@ package dialogservice
 import (
 	"context"
 	pb "github.com/GalahadKingsman/messenger_dialog/pkg/messenger_dialog_api"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Service) CreateDialog(ctx context.Context, req *pb.CreateDialogRequest) (*pb.CreateDialogResponse, error) {
-	// Валидация
-	if req.UserId == req.PeerId {
-		return nil, status.Error(codes.InvalidArgument, "нельзя создать диалог с самим собой")
+	// Проверяем, существует ли диалог между пользователями
+	dialogID, dialogName, err := s.dialogRepo.CheckDialog(req.UserId, req.PeerId)
+	if err != nil {
+		return nil, err
 	}
 
-	// Вызов слоя БД
-	dialogID, err := s.userRepo.CreateDialog(ctx, req.UserId, req.PeerId)
+	// Если диалог существует - возвращаем его
+	if dialogID != 0 {
+		return &pb.CreateDialogResponse{
+			Success:    true,
+			DialogId:   int32(dialogID),
+			DialogName: dialogName,
+		}, nil
+	}
+
+	// Если диалога нет - создаем новый
+	NewDialogID, err := s.dialogRepo.CreateDialog(req.UserId, req.PeerId, req.DialogName)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "ошибка создания диалога")
+		return nil, err
 	}
 
 	return &pb.CreateDialogResponse{
-		DialogId: dialogID,
-		Success:  true,
+		Success:    true,
+		DialogId:   int32(NewDialogID),
+		DialogName: req.DialogName,
 	}, nil
 }

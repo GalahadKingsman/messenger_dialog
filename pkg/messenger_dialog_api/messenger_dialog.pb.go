@@ -91,11 +91,10 @@ func (x *Message) GetTimestamp() int64 {
 
 type DialogInfo struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DialogId      int32                  `protobuf:"varint,1,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"`             // Уникальный ID диалога
-	PeerId        int32                  `protobuf:"varint,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`                   // ID собеседника
-	PeerLogin     string                 `protobuf:"bytes,3,opt,name=peer_login,json=peerLogin,proto3" json:"peer_login,omitempty"`           // Логин собеседника
-	LastMessage   string                 `protobuf:"bytes,4,opt,name=last_message,json=lastMessage,proto3" json:"last_message,omitempty"`     // Текст последнего сообщения
-	LastActivity  int64                  `protobuf:"varint,5,opt,name=last_activity,json=lastActivity,proto3" json:"last_activity,omitempty"` // Timestamp последней активности
+	DialogId      int32                  `protobuf:"varint,1,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"`         // Уникальный ID диалога
+	PeerId        int32                  `protobuf:"varint,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`               // ID собеседника
+	PeerLogin     string                 `protobuf:"bytes,3,opt,name=peer_login,json=peerLogin,proto3" json:"peer_login,omitempty"`       // Логин собеседника
+	LastMessage   string                 `protobuf:"bytes,4,opt,name=last_message,json=lastMessage,proto3" json:"last_message,omitempty"` // Текст последнего сообщения
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -158,17 +157,11 @@ func (x *DialogInfo) GetLastMessage() string {
 	return ""
 }
 
-func (x *DialogInfo) GetLastActivity() int64 {
-	if x != nil {
-		return x.LastActivity
-	}
-	return 0
-}
-
 type CreateDialogRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        int32                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // ID пользователя, который создает диалог
-	PeerId        int32                  `protobuf:"varint,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"` // ID собеседника
+	UserId        int32                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`            // ID пользователя, который создает диалог
+	PeerId        int32                  `protobuf:"varint,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`            // ID собеседника
+	DialogName    string                 `protobuf:"bytes,3,opt,name=dialog_name,json=dialogName,proto3" json:"dialog_name,omitempty"` // Название диалога
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -217,10 +210,18 @@ func (x *CreateDialogRequest) GetPeerId() int32 {
 	return 0
 }
 
+func (x *CreateDialogRequest) GetDialogName() string {
+	if x != nil {
+		return x.DialogName
+	}
+	return ""
+}
+
 type CreateDialogResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                   // Статус, создан ли диалог
-	DialogId      int32                  `protobuf:"varint,2,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"` // ID созданного / найденного диалога
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                        // Статус, создан ли диалог
+	DialogId      int32                  `protobuf:"varint,2,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"`      // ID созданного / найденного диалога
+	DialogName    string                 `protobuf:"bytes,3,opt,name=dialog_name,json=dialogName,proto3" json:"dialog_name,omitempty"` // Название диалога
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -267,6 +268,13 @@ func (x *CreateDialogResponse) GetDialogId() int32 {
 		return x.DialogId
 	}
 	return 0
+}
+
+func (x *CreateDialogResponse) GetDialogName() string {
+	if x != nil {
+		return x.DialogName
+	}
+	return ""
 }
 
 type CheckDialogRequest struct {
@@ -710,21 +718,24 @@ const file_api_messenger_dialog_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x1b\n" +
 	"\tsender_id\x18\x02 \x01(\x05R\bsenderId\x12\x12\n" +
 	"\x04text\x18\x04 \x01(\tR\x04text\x12\x1c\n" +
-	"\ttimestamp\x18\x05 \x01(\x03R\ttimestamp\"\xa9\x01\n" +
+	"\ttimestamp\x18\x05 \x01(\x03R\ttimestamp\"\x84\x01\n" +
 	"\n" +
 	"DialogInfo\x12\x1b\n" +
 	"\tdialog_id\x18\x01 \x01(\x05R\bdialogId\x12\x17\n" +
 	"\apeer_id\x18\x02 \x01(\x05R\x06peerId\x12\x1d\n" +
 	"\n" +
 	"peer_login\x18\x03 \x01(\tR\tpeerLogin\x12!\n" +
-	"\flast_message\x18\x04 \x01(\tR\vlastMessage\x12#\n" +
-	"\rlast_activity\x18\x05 \x01(\x03R\flastActivity\"G\n" +
+	"\flast_message\x18\x04 \x01(\tR\vlastMessage\"h\n" +
 	"\x13CreateDialogRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x05R\x06userId\x12\x17\n" +
-	"\apeer_id\x18\x02 \x01(\x05R\x06peerId\"M\n" +
+	"\apeer_id\x18\x02 \x01(\x05R\x06peerId\x12\x1f\n" +
+	"\vdialog_name\x18\x03 \x01(\tR\n" +
+	"dialogName\"n\n" +
 	"\x14CreateDialogResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x1b\n" +
-	"\tdialog_id\x18\x02 \x01(\x05R\bdialogId\"F\n" +
+	"\tdialog_id\x18\x02 \x01(\x05R\bdialogId\x12\x1f\n" +
+	"\vdialog_name\x18\x03 \x01(\tR\n" +
+	"dialogName\"F\n" +
 	"\x12CheckDialogRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x05R\x06userId\x12\x17\n" +
 	"\apeer_id\x18\x02 \x01(\x05R\x06peerId\"J\n" +

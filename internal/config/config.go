@@ -11,5 +11,5 @@ type DBConfig struct {
 
 type Config struct {
 	DB       DBConfig `envPrefix:"DB_"`
-	GRPCPort int      `env:"GRPC_PORT" envDefault:"9000"`
+	GRPCPort int      `env:"GRPC_PORT" envDefault:"9001"`
 }

@@ -1,10 +1,9 @@
 package dialog_repo
 
 import (
-	"context"
 	"database/sql"
+	"fmt"
 	"github.com/GalahadKingsman/messenger_dialog/internal/models"
-	"time"
 )
 
 type Repo struct {
@@ -17,72 +16,121 @@ func New(db *sql.DB) *Repo {
 	}
 }
 
-func (s *Repo) CreateDialog(ctx context.Context, userID, peerID int32) (int32, error) {
-	var dialogID int32
-	err := s.db.QueryRowContext(ctx, `
-		WITH new_dialog AS (
-			INSERT INTO dialogs DEFAULT VALUES RETURNING id
-		),
-		insert_links AS (
-			INSERT INTO user_dialogs_links (user_id, dialog_id)
-			SELECT $1, id FROM new_dialog
-			UNION ALL
-			SELECT $2, id FROM new_dialog
-			RETURNING dialog_id
-		)
-		SELECT dialog_id FROM insert_links LIMIT 1`,
-		userID, peerID).Scan(&dialogID)
+// Создает новый диалог в базе данных
+func (s *Repo) CreateDialog(userID, peerID int32, dialogName string) (int, error) {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return 0, fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer tx.Rollback()
 
-	return dialogID, err
+	// Вставляем новый диалог
+	var dialogID int
+	err = tx.QueryRow(`
+        INSERT INTO dialogs (name) VALUES ($1) RETURNING id
+    `, dialogName).Scan(&dialogID)
+	if err != nil {
+		return 0, fmt.Errorf("failed to insert dialog: %v", err)
+	}
+
+	// Связываем пользователей с диалогом
+	_, err = tx.Exec(`
+        INSERT INTO users_dialogs_links (user_id, dialog_id, link_name) 
+        VALUES ($1, $2, $3), ($4, $2, $5)
+    `, userID, dialogID, dialogName, peerID, dialogName)
+	if err != nil {
+		return 0, fmt.Errorf("failed to link users to dialog: %v", err)
+	}
+
+	if err = tx.Commit(); err != nil {
+		return 0, fmt.Errorf("failed to commit transaction: %v", err)
+	}
+
+	return dialogID, nil
 }
 
-func (s *Repo) GetUserDialogs(ctx context.Context, userID int32, limit, offset int) ([]*models.DialogInfo, error) {
-	rows, err := s.db.QueryContext(ctx, `
-        SELECT 
-            d.id,
-            u.id,
-            u.login,
-            (SELECT text 
-             FROM messages 
-             WHERE dialog_id = d.id 
-             ORDER BY created_at DESC 
-             LIMIT 1) as last_message,
-            (SELECT created_at 
-             FROM messages 
-             WHERE dialog_id = d.id 
-             ORDER BY created_at DESC 
-             LIMIT 1) as last_activity
-        FROM dialogs d
-        JOIN user_dialogs_links udl ON d.id = udl.dialog_id
-        JOIN users u ON u.id = udl.user_id AND u.id != $1
-        WHERE udl.user_id = $1
-        LIMIT $2 OFFSET $3`,
-		userID, limit, offset)
+func (s *Repo) CheckDialog(userID, peerID int32) (int, string, error) {
+	query := `
+		SELECT d.id, d.name 
+		FROM dialogs d
+		JOIN users_dialogs_links ud1 ON d.id = ud1.dialog_id
+		JOIN users_dialogs_links ud2 ON d.id = ud2.dialog_id
+		WHERE ud1.user_id = $1 AND ud2.user_id = $2
+		LIMIT 1
+	`
 
+	var dialogID int
+	var dialogName string
+
+	err := s.db.QueryRow(query, userID, peerID).Scan(&dialogID, &dialogName)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return 0, "", nil // диалог не найден - это не ошибка
+		}
+		return 0, "", fmt.Errorf("failed to query existing dialog: %v", err)
+	}
+
+	return dialogID, dialogName, nil
+}
+
+func (r *Repo) GetUserDialogs(userID int32, limit, offset int32) ([]*models.DialogInfo, error) {
+	query := `
+		SELECT 
+			d.id AS dialog_id,
+			CASE WHEN ud1.user_id = $1 THEN ud2.user_id ELSE ud1.user_id END AS peer_id,
+			u.login AS peer_login,
+			m.text AS last_message
+		FROM dialogs d
+		JOIN users_dialogs_links ud1 ON d.id = ud1.dialog_id
+		JOIN users_dialogs_links ud2 ON d.id = ud2.dialog_id AND ud2.user_id != $1
+		JOIN users u ON u.id = CASE WHEN ud1.user_id = $1 THEN ud2.user_id ELSE ud1.user_id END
+		LEFT JOIN LATERAL (
+			SELECT text 
+			FROM messages 
+			WHERE dialog_id = d.id 
+			ORDER BY create_date DESC 
+			LIMIT 1
+		) m ON true
+		WHERE ud1.user_id = $1
+		ORDER BY d.create_date DESC
+		LIMIT $2 OFFSET $3
+	`
+
+	rows, err := r.db.Query(query, userID, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query dialogs: %w", err)
 	}
 	defer rows.Close()
 
 	var dialogs []*models.DialogInfo
-	for rows.Next() { // Итерируем по результатам
-		var di models.DialogInfo
-		var lastActivity time.Time
-
-		// Сканируем данные из строки в структуру:
-		err := rows.Scan(
-			&di.ID,          // ID диалога
-			&di.PeerID,      // ID собеседника
-			&di.PeerLogin,   // Логин собеседника
-			&di.LastMessage, // Текст последнего сообщения
-			&lastActivity,   // Время последнего сообщения
+	for rows.Next() {
+		var (
+			dialogID    int32
+			peerID      int32
+			peerLogin   string
+			lastMessage sql.NullString
 		)
-		if err != nil {
-			return nil, err
+
+		if err := rows.Scan(&dialogID, &peerID, &peerLogin, &lastMessage); err != nil {
+			return nil, fmt.Errorf("failed to scan dialog row: %w", err)
 		}
 
-		di.LastActivity = lastActivity // Сохраняем время
-		dialogs = append(dialogs, &di) // Добавляем в результат
+		dialog := &models.DialogInfo{
+			ID:          dialogID,
+			PeerID:      peerID,
+			PeerLogin:   peerLogin,
+			LastMessage: "",
+		}
+
+		if lastMessage.Valid {
+			dialog.LastMessage = lastMessage.String
+		}
+
+		dialogs = append(dialogs, dialog)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error: %w", err)
 	}
 
 	return dialogs, nil
