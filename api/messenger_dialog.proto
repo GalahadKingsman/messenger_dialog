@@ -14,7 +14,7 @@ service DialogService {
 
 message Message {
   int32 id = 1;       // Уникальный ID сообщения
-  int32 sender_id = 2;  // ID отправителя
+  int32 user_id = 2;  // ID отправителя
   string text = 4;      // Текст сообщения
   int64 timestamp = 5;  // Время отправки Timestamp
 }
@@ -60,7 +60,7 @@ message GetUserDialogsResponse {
 
 message SendMessageRequest {
   int32 dialog_id = 1;    // ID диалога
-  int32 sender_id = 2;    // ID отправителя
+  int32 user_id = 2;    // ID отправителя
   string text = 3;        // Текст сообщения
 }
 
@@ -71,7 +71,7 @@ message SendMessageResponse {
 
 message GetDialogMessagesRequest {
   int32 dialog_id = 1;    // ID диалога
-  int32 login = 2;      // логин пользователя (для проверки доступа)
+  string login = 2;      // логин пользователя (для проверки доступа)
   optional int32 limit = 3;     // Сколько сообщение показать (опционально)
   optional int32 offset = 4;    // Сколько сообщений пропустить (опционально)
 }

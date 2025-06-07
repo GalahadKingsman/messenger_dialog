@@ -1,9 +1,11 @@
 package dialog_repo
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/GalahadKingsman/messenger_dialog/internal/models"
+	"time"
 )
 
 type Repo struct {
@@ -134,4 +136,82 @@ func (r *Repo) GetUserDialogs(userID int32, limit, offset int32) ([]*models.Dial
 	}
 
 	return dialogs, nil
+}
+
+func (r *Repo) SendMessage(dialogID, userID int32, text string) (int32, time.Time, error) {
+	var messageID int32
+	var createdAt time.Time
+
+	query := `
+		INSERT INTO messages (dialog_id, user_id, text, create_date)
+		VALUES ($1, $2, $3, NOW())
+		RETURNING id, create_date
+	`
+
+	err := r.db.QueryRow(query, dialogID, userID, text).Scan(&messageID, &createdAt)
+	if err != nil {
+		return 0, time.Time{}, fmt.Errorf("failed to insert message: %w", err)
+	}
+
+	return messageID, createdAt, nil
+}
+
+func (r *Repo) GetDialogMessages(ctx context.Context, dialogID int32, userLogin string, limit, offset *int32) ([]*models.Message, error) {
+	// Проверяем доступ через JOIN с таблицей users
+	var access bool
+	err := r.db.QueryRowContext(ctx, `
+        SELECT EXISTS(
+            SELECT 1 FROM users_dialogs_links udl
+            JOIN users u ON udl.user_id = u.id
+            WHERE udl.dialog_id = $1 AND u.login = $2
+        )`, dialogID, userLogin).Scan(&access)
+
+	if err != nil {
+		return nil, fmt.Errorf("access check failed: %w", err)
+	}
+	if !access {
+		return nil, sql.ErrNoRows
+	}
+
+	// Настройка пагинации
+	queryLimit := 100
+	if limit != nil {
+		queryLimit = int(*limit)
+		if queryLimit > 1000 {
+			queryLimit = 1000
+		}
+	}
+
+	queryOffset := 0
+	if offset != nil {
+		queryOffset = int(*offset)
+	}
+
+	// Запрос сообщений
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, user_id, text, create_date 
+		FROM messages 
+		WHERE dialog_id = $1 
+		ORDER BY create_date DESC 
+		LIMIT $2 OFFSET $3`,
+		dialogID, queryLimit, queryOffset)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
+
+	var messages []*models.Message
+	for rows.Next() {
+		var msg models.Message
+		if err := rows.Scan(&msg.ID, &msg.UserID, &msg.Text, &msg.CreateDate); err != nil {
+			return nil, fmt.Errorf("row scan failed: %w", err)
+		}
+		messages = append(messages, &msg)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows error: %w", err)
+	}
+
+	return messages, nil
 }

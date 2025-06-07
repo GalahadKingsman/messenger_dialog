@@ -2,6 +2,7 @@ package dialogservice
 
 import (
 	"context"
+	"github.com/GalahadKingsman/messenger_dialog/internal/models"
 	pb "github.com/GalahadKingsman/messenger_dialog/pkg/messenger_dialog_api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -27,5 +28,18 @@ func (s *Service) GetUserDialogs(ctx context.Context, req *pb.GetUserDialogsRequ
 		return nil, status.Errorf(codes.Internal, "failed to get dialogs: %v", err)
 	}
 
-	return &pb.GetUserDialogsResponse{Dialogs: dialogs}, nil
+	return &pb.GetUserDialogsResponse{Dialogs: convertToPbDialogs(dialogs)}, nil
+}
+
+func convertToPbDialogs(modelsDialogs []*models.DialogInfo) []*pb.DialogInfo {
+	pbDialogs := make([]*pb.DialogInfo, len(modelsDialogs))
+	for i, d := range modelsDialogs {
+		pbDialogs[i] = &pb.DialogInfo{
+			DialogId:    d.ID,
+			PeerId:      d.PeerID,
+			PeerLogin:   d.PeerLogin,
+			LastMessage: d.LastMessage,
+		}
+	}
+	return pbDialogs
 }

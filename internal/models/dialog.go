@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Dialog struct {
-	ID         int
+	ID         int32
 	Name       string
 	CreateDate time.Time
 }

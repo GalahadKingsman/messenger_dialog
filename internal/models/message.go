@@ -3,9 +3,9 @@ package models
 import "time"
 
 type Message struct {
-	ID         int
-	UserID     int
-	DialogID   int
+	ID         int32
+	UserID     int32
+	DialogID   int32
 	Text       string
 	CreateDate time.Time
 }

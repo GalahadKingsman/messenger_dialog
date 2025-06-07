@@ -23,10 +23,10 @@ const (
 
 type Message struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                             // Уникальный ID сообщения
-	SenderId      int32                  `protobuf:"varint,2,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"` // ID отправителя
-	Text          string                 `protobuf:"bytes,4,opt,name=text,proto3" json:"text,omitempty"`                          // Текст сообщения
-	Timestamp     int64                  `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`               // Время отправки Timestamp
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                       // Уникальный ID сообщения
+	UserId        int32                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // ID отправителя
+	Text          string                 `protobuf:"bytes,4,opt,name=text,proto3" json:"text,omitempty"`                    // Текст сообщения
+	Timestamp     int64                  `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`         // Время отправки Timestamp
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -68,9 +68,9 @@ func (x *Message) GetId() int32 {
 	return 0
 }
 
-func (x *Message) GetSenderId() int32 {
+func (x *Message) GetUserId() int32 {
 	if x != nil {
-		return x.SenderId
+		return x.UserId
 	}
 	return 0
 }
@@ -488,7 +488,7 @@ func (x *GetUserDialogsResponse) GetDialogs() []*DialogInfo {
 type SendMessageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DialogId      int32                  `protobuf:"varint,1,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"` // ID диалога
-	SenderId      int32                  `protobuf:"varint,2,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"` // ID отправителя
+	UserId        int32                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`       // ID отправителя
 	Text          string                 `protobuf:"bytes,3,opt,name=text,proto3" json:"text,omitempty"`                          // Текст сообщения
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -531,9 +531,9 @@ func (x *SendMessageRequest) GetDialogId() int32 {
 	return 0
 }
 
-func (x *SendMessageRequest) GetSenderId() int32 {
+func (x *SendMessageRequest) GetUserId() int32 {
 	if x != nil {
-		return x.SenderId
+		return x.UserId
 	}
 	return 0
 }
@@ -600,7 +600,7 @@ func (x *SendMessageResponse) GetTimestamp() int64 {
 type GetDialogMessagesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DialogId      int32                  `protobuf:"varint,1,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"` // ID диалога
-	Login         int32                  `protobuf:"varint,2,opt,name=login,proto3" json:"login,omitempty"`                       // логин пользователя (для проверки доступа)
+	Login         string                 `protobuf:"bytes,2,opt,name=login,proto3" json:"login,omitempty"`                        // логин пользователя (для проверки доступа)
 	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`                 // Сколько сообщение показать (опционально)
 	Offset        *int32                 `protobuf:"varint,4,opt,name=offset,proto3,oneof" json:"offset,omitempty"`               // Сколько сообщений пропустить (опционально)
 	unknownFields protoimpl.UnknownFields
@@ -644,11 +644,11 @@ func (x *GetDialogMessagesRequest) GetDialogId() int32 {
 	return 0
 }
 
-func (x *GetDialogMessagesRequest) GetLogin() int32 {
+func (x *GetDialogMessagesRequest) GetLogin() string {
 	if x != nil {
 		return x.Login
 	}
-	return 0
+	return ""
 }
 
 func (x *GetDialogMessagesRequest) GetLimit() int32 {
@@ -713,10 +713,10 @@ var File_api_messenger_dialog_proto protoreflect.FileDescriptor
 
 const file_api_messenger_dialog_proto_rawDesc = "" +
 	"\n" +
-	"\x1aapi/messenger_dialog.proto\x12\x06dialog\"h\n" +
+	"\x1aapi/messenger_dialog.proto\x12\x06dialog\"d\n" +
 	"\aMessage\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x1b\n" +
-	"\tsender_id\x18\x02 \x01(\x05R\bsenderId\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x05R\x06userId\x12\x12\n" +
 	"\x04text\x18\x04 \x01(\tR\x04text\x12\x1c\n" +
 	"\ttimestamp\x18\x05 \x01(\x03R\ttimestamp\"\x84\x01\n" +
 	"\n" +
@@ -749,10 +749,10 @@ const file_api_messenger_dialog_proto_rawDesc = "" +
 	"\x06_limitB\t\n" +
 	"\a_offset\"F\n" +
 	"\x16GetUserDialogsResponse\x12,\n" +
-	"\adialogs\x18\x01 \x03(\v2\x12.dialog.DialogInfoR\adialogs\"b\n" +
+	"\adialogs\x18\x01 \x03(\v2\x12.dialog.DialogInfoR\adialogs\"^\n" +
 	"\x12SendMessageRequest\x12\x1b\n" +
-	"\tdialog_id\x18\x01 \x01(\x05R\bdialogId\x12\x1b\n" +
-	"\tsender_id\x18\x02 \x01(\x05R\bsenderId\x12\x12\n" +
+	"\tdialog_id\x18\x01 \x01(\x05R\bdialogId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x05R\x06userId\x12\x12\n" +
 	"\x04text\x18\x03 \x01(\tR\x04text\"R\n" +
 	"\x13SendMessageResponse\x12\x1d\n" +
 	"\n" +
@@ -760,7 +760,7 @@ const file_api_messenger_dialog_proto_rawDesc = "" +
 	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp\"\x9a\x01\n" +
 	"\x18GetDialogMessagesRequest\x12\x1b\n" +
 	"\tdialog_id\x18\x01 \x01(\x05R\bdialogId\x12\x14\n" +
-	"\x05login\x18\x02 \x01(\x05R\x05login\x12\x19\n" +
+	"\x05login\x18\x02 \x01(\tR\x05login\x12\x19\n" +
 	"\x05limit\x18\x03 \x01(\x05H\x00R\x05limit\x88\x01\x01\x12\x1b\n" +
 	"\x06offset\x18\x04 \x01(\x05H\x01R\x06offset\x88\x01\x01B\b\n" +
 	"\x06_limitB\t\n" +

@@ -1,9 +1,9 @@
 package models
 
 type UsersDialogLink struct {
-	ID       int
-	UserID   int
-	DialogID int
+	ID       int32
+	UserID   int32
+	DialogID int32
 	LinkName string
 }
 
