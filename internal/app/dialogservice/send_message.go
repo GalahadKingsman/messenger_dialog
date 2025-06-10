@@ -5,6 +5,7 @@ import (
 	pb "github.com/GalahadKingsman/messenger_dialog/pkg/messenger_dialog_api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
 )
 
@@ -21,15 +22,15 @@ func (s *Service) SendMessage(ctx context.Context, req *pb.SendMessageRequest) (
 	}
 
 	// Сохраняем сообщение в БД
-	messageID, timestamp, err := s.dialogRepo.SendMessage(req.DialogId, req.UserId, req.Text)
+	messageID, createTime, err := s.dialogRepo.SendMessage(req.DialogId, req.UserId, req.Text)
 	if err != nil {
 		log.Printf("Failed to send message: %v", err)
 		return nil, status.Error(codes.Internal, "failed to send message")
 	}
 
-	// Формируем ответ
+	// Формируем ответ с временем из БД
 	return &pb.SendMessageResponse{
 		MessageId: messageID,
-		Timestamp: timestamp.Unix(), // Конвертируем время в Unix timestamp
+		Timestamp: timestamppb.New(createTime), // Используем время из БД
 	}, nil
 }

@@ -7,6 +7,7 @@ import (
 	pb "github.com/GalahadKingsman/messenger_dialog/pkg/messenger_dialog_api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Service) GetDialogMessages(ctx context.Context, req *pb.GetDialogMessagesRequest) (*pb.GetDialogMessagesResponse, error) {
@@ -17,7 +18,7 @@ func (s *Service) GetDialogMessages(ctx context.Context, req *pb.GetDialogMessag
 	if req.Login == "" {
 		return nil, status.Error(codes.InvalidArgument, "login is required")
 	}
-
+	
 	// Получаем сообщения из БД
 	messages, err := s.dialogRepo.GetDialogMessages(ctx, req.DialogId, req.Login, req.Limit, req.Offset)
 	if err != nil {
@@ -32,9 +33,9 @@ func (s *Service) GetDialogMessages(ctx context.Context, req *pb.GetDialogMessag
 	for _, msg := range messages {
 		pbMessages = append(pbMessages, &pb.Message{
 			Id:        msg.ID,
-			UserId:    msg.UserID, // Изменил UserId на SenderId согласно proto-контракту
+			UserId:    msg.UserID,
 			Text:      msg.Text,
-			Timestamp: msg.CreateDate.Unix(), // Конвертируем time.Time в Unix timestamp
+			Timestamp: timestamppb.New(msg.CreateDate),
 		})
 	}
 

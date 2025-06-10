@@ -157,23 +157,39 @@ func (r *Repo) SendMessage(dialogID, userID int32, text string) (int32, time.Tim
 }
 
 func (r *Repo) GetDialogMessages(ctx context.Context, dialogID int32, userLogin string, limit, offset *int32) ([]*models.Message, error) {
-	// Проверяем доступ через JOIN с таблицей users
-	var access bool
+	// 1. Проверяем, что пользователь является участником диалога
+	var isParticipant bool
 	err := r.db.QueryRowContext(ctx, `
         SELECT EXISTS(
             SELECT 1 FROM users_dialogs_links udl
             JOIN users u ON udl.user_id = u.id
             WHERE udl.dialog_id = $1 AND u.login = $2
-        )`, dialogID, userLogin).Scan(&access)
+        )`, dialogID, userLogin).Scan(&isParticipant)
 
 	if err != nil {
 		return nil, fmt.Errorf("access check failed: %w", err)
 	}
-	if !access {
+
+	if !isParticipant {
 		return nil, sql.ErrNoRows
 	}
 
-	// Настройка пагинации
+	// 2. Проверяем, что в диалоге ровно 2 участника (иначе это не приватный диалог)
+	var participantsCount int
+	err = r.db.QueryRowContext(ctx, `
+        SELECT COUNT(*) 
+        FROM users_dialogs_links 
+        WHERE dialog_id = $1`, dialogID).Scan(&participantsCount)
+
+	if err != nil {
+		return nil, fmt.Errorf("participants count check failed: %w", err)
+	}
+
+	if participantsCount != 2 {
+		return nil, sql.ErrNoRows // или можно возвращать ошибку "invalid dialog"
+	}
+
+	// Остальная часть функции (пагинация + запрос сообщений) без изменений
 	queryLimit := 100
 	if limit != nil {
 		queryLimit = int(*limit)
@@ -187,13 +203,12 @@ func (r *Repo) GetDialogMessages(ctx context.Context, dialogID int32, userLogin 
 		queryOffset = int(*offset)
 	}
 
-	// Запрос сообщений
 	rows, err := r.db.QueryContext(ctx, `
-		SELECT id, user_id, text, create_date 
-		FROM messages 
-		WHERE dialog_id = $1 
-		ORDER BY create_date DESC 
-		LIMIT $2 OFFSET $3`,
+        SELECT id, user_id, text, create_date 
+        FROM messages 
+        WHERE dialog_id = $1 
+        ORDER BY create_date DESC 
+        LIMIT $2 OFFSET $3`,
 		dialogID, queryLimit, queryOffset)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)

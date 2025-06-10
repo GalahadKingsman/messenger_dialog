@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.5
-// source: api/messenger_dialog.proto
+// source: messenger_dialog.proto
 
 package messenger_dialog_api
 
@@ -269,5 +269,5 @@ var DialogService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/messenger_dialog.proto",
+	Metadata: "messenger_dialog.proto",
 }
