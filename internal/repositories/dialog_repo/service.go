@@ -156,60 +156,27 @@ func (r *Repo) SendMessage(dialogID, userID int32, text string) (int32, time.Tim
 	return messageID, createdAt, nil
 }
 
-func (r *Repo) GetDialogMessages(ctx context.Context, dialogID int32, userLogin string, limit, offset *int32) ([]*models.Message, error) {
-	// 1. Проверяем, что пользователь является участником диалога
-	var isParticipant bool
-	err := r.db.QueryRowContext(ctx, `
-        SELECT EXISTS(
-            SELECT 1 FROM users_dialogs_links udl
-            JOIN users u ON udl.user_id = u.id
-            WHERE udl.dialog_id = $1 AND u.login = $2
-        )`, dialogID, userLogin).Scan(&isParticipant)
-
-	if err != nil {
-		return nil, fmt.Errorf("access check failed: %w", err)
-	}
-
-	if !isParticipant {
-		return nil, sql.ErrNoRows
-	}
-
-	// 2. Проверяем, что в диалоге ровно 2 участника (иначе это не приватный диалог)
-	var participantsCount int
-	err = r.db.QueryRowContext(ctx, `
-        SELECT COUNT(*) 
-        FROM users_dialogs_links 
-        WHERE dialog_id = $1`, dialogID).Scan(&participantsCount)
-
-	if err != nil {
-		return nil, fmt.Errorf("participants count check failed: %w", err)
-	}
-
-	if participantsCount != 2 {
-		return nil, sql.ErrNoRows // или можно возвращать ошибку "invalid dialog"
-	}
-
-	// Остальная часть функции (пагинация + запрос сообщений) без изменений
-	queryLimit := 100
-	if limit != nil {
-		queryLimit = int(*limit)
-		if queryLimit > 1000 {
-			queryLimit = 1000
-		}
-	}
-
-	queryOffset := 0
-	if offset != nil {
-		queryOffset = int(*offset)
-	}
-
-	rows, err := r.db.QueryContext(ctx, `
+func (r *Repo) GetDialogMessages(ctx context.Context, dialogID int32, limit, offset *int32) ([]*models.Message, error) {
+	query := `
         SELECT id, user_id, text, create_date 
         FROM messages 
         WHERE dialog_id = $1 
-        ORDER BY create_date DESC 
-        LIMIT $2 OFFSET $3`,
-		dialogID, queryLimit, queryOffset)
+        ORDER BY create_date DESC`
+
+	args := []interface{}{dialogID}
+	paramIndex := 2
+
+	if limit != nil {
+		query += fmt.Sprintf(" LIMIT $%d", paramIndex)
+		args = append(args, *limit)
+		paramIndex++
+	}
+	if offset != nil {
+		query += fmt.Sprintf(" OFFSET $%d", paramIndex)
+		args = append(args, *offset)
+	}
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)
 	}

@@ -15,12 +15,9 @@ func (s *Service) GetDialogMessages(ctx context.Context, req *pb.GetDialogMessag
 	if req.DialogId == 0 {
 		return nil, status.Error(codes.InvalidArgument, "dialog_id is required")
 	}
-	if req.Login == "" {
-		return nil, status.Error(codes.InvalidArgument, "login is required")
-	}
-	
+
 	// Получаем сообщения из БД
-	messages, err := s.dialogRepo.GetDialogMessages(ctx, req.DialogId, req.Login, req.Limit, req.Offset)
+	messages, err := s.dialogRepo.GetDialogMessages(ctx, req.DialogId, req.Limit, req.Offset)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return &pb.GetDialogMessagesResponse{Messages: []*pb.Message{}}, nil

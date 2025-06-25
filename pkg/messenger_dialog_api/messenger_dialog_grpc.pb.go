@@ -20,7 +20,6 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	DialogService_CreateDialog_FullMethodName      = "/dialog.DialogService/CreateDialog"
-	DialogService_CheckDialog_FullMethodName       = "/dialog.DialogService/CheckDialog"
 	DialogService_GetUserDialogs_FullMethodName    = "/dialog.DialogService/GetUserDialogs"
 	DialogService_SendMessage_FullMethodName       = "/dialog.DialogService/SendMessage"
 	DialogService_GetDialogMessages_FullMethodName = "/dialog.DialogService/GetDialogMessages"
@@ -31,7 +30,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DialogServiceClient interface {
 	CreateDialog(ctx context.Context, in *CreateDialogRequest, opts ...grpc.CallOption) (*CreateDialogResponse, error)
-	CheckDialog(ctx context.Context, in *CheckDialogRequest, opts ...grpc.CallOption) (*CheckDialogResponse, error)
 	GetUserDialogs(ctx context.Context, in *GetUserDialogsRequest, opts ...grpc.CallOption) (*GetUserDialogsResponse, error)
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
 	GetDialogMessages(ctx context.Context, in *GetDialogMessagesRequest, opts ...grpc.CallOption) (*GetDialogMessagesResponse, error)
@@ -49,16 +47,6 @@ func (c *dialogServiceClient) CreateDialog(ctx context.Context, in *CreateDialog
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateDialogResponse)
 	err := c.cc.Invoke(ctx, DialogService_CreateDialog_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dialogServiceClient) CheckDialog(ctx context.Context, in *CheckDialogRequest, opts ...grpc.CallOption) (*CheckDialogResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CheckDialogResponse)
-	err := c.cc.Invoke(ctx, DialogService_CheckDialog_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +88,6 @@ func (c *dialogServiceClient) GetDialogMessages(ctx context.Context, in *GetDial
 // for forward compatibility.
 type DialogServiceServer interface {
 	CreateDialog(context.Context, *CreateDialogRequest) (*CreateDialogResponse, error)
-	CheckDialog(context.Context, *CheckDialogRequest) (*CheckDialogResponse, error)
 	GetUserDialogs(context.Context, *GetUserDialogsRequest) (*GetUserDialogsResponse, error)
 	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
 	GetDialogMessages(context.Context, *GetDialogMessagesRequest) (*GetDialogMessagesResponse, error)
@@ -116,9 +103,6 @@ type UnimplementedDialogServiceServer struct{}
 
 func (UnimplementedDialogServiceServer) CreateDialog(context.Context, *CreateDialogRequest) (*CreateDialogResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDialog not implemented")
-}
-func (UnimplementedDialogServiceServer) CheckDialog(context.Context, *CheckDialogRequest) (*CheckDialogResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckDialog not implemented")
 }
 func (UnimplementedDialogServiceServer) GetUserDialogs(context.Context, *GetUserDialogsRequest) (*GetUserDialogsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserDialogs not implemented")
@@ -164,24 +148,6 @@ func _DialogService_CreateDialog_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DialogServiceServer).CreateDialog(ctx, req.(*CreateDialogRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DialogService_CheckDialog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CheckDialogRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DialogServiceServer).CheckDialog(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DialogService_CheckDialog_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DialogServiceServer).CheckDialog(ctx, req.(*CheckDialogRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -250,10 +216,6 @@ var DialogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateDialog",
 			Handler:    _DialogService_CreateDialog_Handler,
-		},
-		{
-			MethodName: "CheckDialog",
-			Handler:    _DialogService_CheckDialog_Handler,
 		},
 		{
 			MethodName: "GetUserDialogs",

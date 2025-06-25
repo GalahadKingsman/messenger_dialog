@@ -278,110 +278,6 @@ func (x *CreateDialogResponse) GetDialogName() string {
 	return ""
 }
 
-type CheckDialogRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        int32                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // ID первого пользователя
-	PeerId        int32                  `protobuf:"varint,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"` // ID второго пользователя
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CheckDialogRequest) Reset() {
-	*x = CheckDialogRequest{}
-	mi := &file_messenger_dialog_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CheckDialogRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CheckDialogRequest) ProtoMessage() {}
-
-func (x *CheckDialogRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CheckDialogRequest.ProtoReflect.Descriptor instead.
-func (*CheckDialogRequest) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *CheckDialogRequest) GetUserId() int32 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *CheckDialogRequest) GetPeerId() int32 {
-	if x != nil {
-		return x.PeerId
-	}
-	return 0
-}
-
-type CheckDialogResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Exists        bool                   `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`                     // статус, есть ли диалог
-	DialogId      int32                  `protobuf:"varint,2,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"` // выведет 0, если диалога нет, если есть, то его ID
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CheckDialogResponse) Reset() {
-	*x = CheckDialogResponse{}
-	mi := &file_messenger_dialog_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CheckDialogResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CheckDialogResponse) ProtoMessage() {}
-
-func (x *CheckDialogResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CheckDialogResponse.ProtoReflect.Descriptor instead.
-func (*CheckDialogResponse) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *CheckDialogResponse) GetExists() bool {
-	if x != nil {
-		return x.Exists
-	}
-	return false
-}
-
-func (x *CheckDialogResponse) GetDialogId() int32 {
-	if x != nil {
-		return x.DialogId
-	}
-	return 0
-}
-
 type GetUserDialogsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int32                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // ID пользователя
@@ -393,7 +289,7 @@ type GetUserDialogsRequest struct {
 
 func (x *GetUserDialogsRequest) Reset() {
 	*x = GetUserDialogsRequest{}
-	mi := &file_messenger_dialog_proto_msgTypes[6]
+	mi := &file_messenger_dialog_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -405,7 +301,7 @@ func (x *GetUserDialogsRequest) String() string {
 func (*GetUserDialogsRequest) ProtoMessage() {}
 
 func (x *GetUserDialogsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[6]
+	mi := &file_messenger_dialog_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -418,7 +314,7 @@ func (x *GetUserDialogsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserDialogsRequest.ProtoReflect.Descriptor instead.
 func (*GetUserDialogsRequest) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{6}
+	return file_messenger_dialog_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetUserDialogsRequest) GetUserId() int32 {
@@ -451,7 +347,7 @@ type GetUserDialogsResponse struct {
 
 func (x *GetUserDialogsResponse) Reset() {
 	*x = GetUserDialogsResponse{}
-	mi := &file_messenger_dialog_proto_msgTypes[7]
+	mi := &file_messenger_dialog_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -463,7 +359,7 @@ func (x *GetUserDialogsResponse) String() string {
 func (*GetUserDialogsResponse) ProtoMessage() {}
 
 func (x *GetUserDialogsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[7]
+	mi := &file_messenger_dialog_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -476,7 +372,7 @@ func (x *GetUserDialogsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserDialogsResponse.ProtoReflect.Descriptor instead.
 func (*GetUserDialogsResponse) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{7}
+	return file_messenger_dialog_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetUserDialogsResponse) GetDialogs() []*DialogInfo {
@@ -497,7 +393,7 @@ type SendMessageRequest struct {
 
 func (x *SendMessageRequest) Reset() {
 	*x = SendMessageRequest{}
-	mi := &file_messenger_dialog_proto_msgTypes[8]
+	mi := &file_messenger_dialog_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -509,7 +405,7 @@ func (x *SendMessageRequest) String() string {
 func (*SendMessageRequest) ProtoMessage() {}
 
 func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[8]
+	mi := &file_messenger_dialog_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -522,7 +418,7 @@ func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageRequest.ProtoReflect.Descriptor instead.
 func (*SendMessageRequest) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{8}
+	return file_messenger_dialog_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SendMessageRequest) GetDialogId() int32 {
@@ -556,7 +452,7 @@ type SendMessageResponse struct {
 
 func (x *SendMessageResponse) Reset() {
 	*x = SendMessageResponse{}
-	mi := &file_messenger_dialog_proto_msgTypes[9]
+	mi := &file_messenger_dialog_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -568,7 +464,7 @@ func (x *SendMessageResponse) String() string {
 func (*SendMessageResponse) ProtoMessage() {}
 
 func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[9]
+	mi := &file_messenger_dialog_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -581,7 +477,7 @@ func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageResponse.ProtoReflect.Descriptor instead.
 func (*SendMessageResponse) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{9}
+	return file_messenger_dialog_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SendMessageResponse) GetMessageId() int32 {
@@ -601,7 +497,6 @@ func (x *SendMessageResponse) GetTimestamp() *timestamppb.Timestamp {
 type GetDialogMessagesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DialogId      int32                  `protobuf:"varint,1,opt,name=dialog_id,json=dialogId,proto3" json:"dialog_id,omitempty"` // ID диалога
-	Login         string                 `protobuf:"bytes,2,opt,name=login,proto3" json:"login,omitempty"`                        // логин пользователя (для проверки доступа)
 	Limit         *int32                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`                 // Сколько сообщение показать (опционально)
 	Offset        *int32                 `protobuf:"varint,4,opt,name=offset,proto3,oneof" json:"offset,omitempty"`               // Сколько сообщений пропустить (опционально)
 	unknownFields protoimpl.UnknownFields
@@ -610,7 +505,7 @@ type GetDialogMessagesRequest struct {
 
 func (x *GetDialogMessagesRequest) Reset() {
 	*x = GetDialogMessagesRequest{}
-	mi := &file_messenger_dialog_proto_msgTypes[10]
+	mi := &file_messenger_dialog_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -622,7 +517,7 @@ func (x *GetDialogMessagesRequest) String() string {
 func (*GetDialogMessagesRequest) ProtoMessage() {}
 
 func (x *GetDialogMessagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[10]
+	mi := &file_messenger_dialog_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -635,7 +530,7 @@ func (x *GetDialogMessagesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetDialogMessagesRequest.ProtoReflect.Descriptor instead.
 func (*GetDialogMessagesRequest) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{10}
+	return file_messenger_dialog_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetDialogMessagesRequest) GetDialogId() int32 {
@@ -643,13 +538,6 @@ func (x *GetDialogMessagesRequest) GetDialogId() int32 {
 		return x.DialogId
 	}
 	return 0
-}
-
-func (x *GetDialogMessagesRequest) GetLogin() string {
-	if x != nil {
-		return x.Login
-	}
-	return ""
 }
 
 func (x *GetDialogMessagesRequest) GetLimit() int32 {
@@ -675,7 +563,7 @@ type GetDialogMessagesResponse struct {
 
 func (x *GetDialogMessagesResponse) Reset() {
 	*x = GetDialogMessagesResponse{}
-	mi := &file_messenger_dialog_proto_msgTypes[11]
+	mi := &file_messenger_dialog_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -687,7 +575,7 @@ func (x *GetDialogMessagesResponse) String() string {
 func (*GetDialogMessagesResponse) ProtoMessage() {}
 
 func (x *GetDialogMessagesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_messenger_dialog_proto_msgTypes[11]
+	mi := &file_messenger_dialog_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -700,7 +588,7 @@ func (x *GetDialogMessagesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetDialogMessagesResponse.ProtoReflect.Descriptor instead.
 func (*GetDialogMessagesResponse) Descriptor() ([]byte, []int) {
-	return file_messenger_dialog_proto_rawDescGZIP(), []int{11}
+	return file_messenger_dialog_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetDialogMessagesResponse) GetMessages() []*Message {
@@ -736,13 +624,7 @@ const file_messenger_dialog_proto_rawDesc = "" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x1b\n" +
 	"\tdialog_id\x18\x02 \x01(\x05R\bdialogId\x12\x1f\n" +
 	"\vdialog_name\x18\x03 \x01(\tR\n" +
-	"dialogName\"F\n" +
-	"\x12CheckDialogRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x05R\x06userId\x12\x17\n" +
-	"\apeer_id\x18\x02 \x01(\x05R\x06peerId\"J\n" +
-	"\x13CheckDialogResponse\x12\x16\n" +
-	"\x06exists\x18\x01 \x01(\bR\x06exists\x12\x1b\n" +
-	"\tdialog_id\x18\x02 \x01(\x05R\bdialogId\"}\n" +
+	"dialogName\"}\n" +
 	"\x15GetUserDialogsRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x05R\x06userId\x12\x19\n" +
 	"\x05limit\x18\x02 \x01(\x05H\x00R\x05limit\x88\x01\x01\x12\x1b\n" +
@@ -758,19 +640,17 @@ const file_messenger_dialog_proto_rawDesc = "" +
 	"\x13SendMessageResponse\x12\x1d\n" +
 	"\n" +
 	"message_id\x18\x01 \x01(\x05R\tmessageId\x128\n" +
-	"\ttimestamp\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"\x9a\x01\n" +
+	"\ttimestamp\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"\x84\x01\n" +
 	"\x18GetDialogMessagesRequest\x12\x1b\n" +
-	"\tdialog_id\x18\x01 \x01(\x05R\bdialogId\x12\x14\n" +
-	"\x05login\x18\x02 \x01(\tR\x05login\x12\x19\n" +
+	"\tdialog_id\x18\x01 \x01(\x05R\bdialogId\x12\x19\n" +
 	"\x05limit\x18\x03 \x01(\x05H\x00R\x05limit\x88\x01\x01\x12\x1b\n" +
 	"\x06offset\x18\x04 \x01(\x05H\x01R\x06offset\x88\x01\x01B\b\n" +
 	"\x06_limitB\t\n" +
 	"\a_offset\"H\n" +
 	"\x19GetDialogMessagesResponse\x12+\n" +
-	"\bmessages\x18\x01 \x03(\v2\x0f.dialog.MessageR\bmessages2\x95\x03\n" +
+	"\bmessages\x18\x01 \x03(\v2\x0f.dialog.MessageR\bmessages2\xcd\x02\n" +
 	"\rDialogService\x12I\n" +
-	"\fCreateDialog\x12\x1b.dialog.CreateDialogRequest\x1a\x1c.dialog.CreateDialogResponse\x12F\n" +
-	"\vCheckDialog\x12\x1a.dialog.CheckDialogRequest\x1a\x1b.dialog.CheckDialogResponse\x12O\n" +
+	"\fCreateDialog\x12\x1b.dialog.CreateDialogRequest\x1a\x1c.dialog.CreateDialogResponse\x12O\n" +
 	"\x0eGetUserDialogs\x12\x1d.dialog.GetUserDialogsRequest\x1a\x1e.dialog.GetUserDialogsResponse\x12F\n" +
 	"\vSendMessage\x12\x1a.dialog.SendMessageRequest\x1a\x1b.dialog.SendMessageResponse\x12X\n" +
 	"\x11GetDialogMessages\x12 .dialog.GetDialogMessagesRequest\x1a!.dialog.GetDialogMessagesResponseB\x1aZ\x18pkg/messenger_dialog_apib\x06proto3"
@@ -787,39 +667,35 @@ func file_messenger_dialog_proto_rawDescGZIP() []byte {
 	return file_messenger_dialog_proto_rawDescData
 }
 
-var file_messenger_dialog_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_messenger_dialog_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_messenger_dialog_proto_goTypes = []any{
 	(*Message)(nil),                   // 0: dialog.Message
 	(*DialogInfo)(nil),                // 1: dialog.DialogInfo
 	(*CreateDialogRequest)(nil),       // 2: dialog.CreateDialogRequest
 	(*CreateDialogResponse)(nil),      // 3: dialog.CreateDialogResponse
-	(*CheckDialogRequest)(nil),        // 4: dialog.CheckDialogRequest
-	(*CheckDialogResponse)(nil),       // 5: dialog.CheckDialogResponse
-	(*GetUserDialogsRequest)(nil),     // 6: dialog.GetUserDialogsRequest
-	(*GetUserDialogsResponse)(nil),    // 7: dialog.GetUserDialogsResponse
-	(*SendMessageRequest)(nil),        // 8: dialog.SendMessageRequest
-	(*SendMessageResponse)(nil),       // 9: dialog.SendMessageResponse
-	(*GetDialogMessagesRequest)(nil),  // 10: dialog.GetDialogMessagesRequest
-	(*GetDialogMessagesResponse)(nil), // 11: dialog.GetDialogMessagesResponse
-	(*timestamppb.Timestamp)(nil),     // 12: google.protobuf.Timestamp
+	(*GetUserDialogsRequest)(nil),     // 4: dialog.GetUserDialogsRequest
+	(*GetUserDialogsResponse)(nil),    // 5: dialog.GetUserDialogsResponse
+	(*SendMessageRequest)(nil),        // 6: dialog.SendMessageRequest
+	(*SendMessageResponse)(nil),       // 7: dialog.SendMessageResponse
+	(*GetDialogMessagesRequest)(nil),  // 8: dialog.GetDialogMessagesRequest
+	(*GetDialogMessagesResponse)(nil), // 9: dialog.GetDialogMessagesResponse
+	(*timestamppb.Timestamp)(nil),     // 10: google.protobuf.Timestamp
 }
 var file_messenger_dialog_proto_depIdxs = []int32{
-	12, // 0: dialog.Message.timestamp:type_name -> google.protobuf.Timestamp
+	10, // 0: dialog.Message.timestamp:type_name -> google.protobuf.Timestamp
 	1,  // 1: dialog.GetUserDialogsResponse.dialogs:type_name -> dialog.DialogInfo
-	12, // 2: dialog.SendMessageResponse.timestamp:type_name -> google.protobuf.Timestamp
+	10, // 2: dialog.SendMessageResponse.timestamp:type_name -> google.protobuf.Timestamp
 	0,  // 3: dialog.GetDialogMessagesResponse.messages:type_name -> dialog.Message
 	2,  // 4: dialog.DialogService.CreateDialog:input_type -> dialog.CreateDialogRequest
-	4,  // 5: dialog.DialogService.CheckDialog:input_type -> dialog.CheckDialogRequest
-	6,  // 6: dialog.DialogService.GetUserDialogs:input_type -> dialog.GetUserDialogsRequest
-	8,  // 7: dialog.DialogService.SendMessage:input_type -> dialog.SendMessageRequest
-	10, // 8: dialog.DialogService.GetDialogMessages:input_type -> dialog.GetDialogMessagesRequest
-	3,  // 9: dialog.DialogService.CreateDialog:output_type -> dialog.CreateDialogResponse
-	5,  // 10: dialog.DialogService.CheckDialog:output_type -> dialog.CheckDialogResponse
-	7,  // 11: dialog.DialogService.GetUserDialogs:output_type -> dialog.GetUserDialogsResponse
-	9,  // 12: dialog.DialogService.SendMessage:output_type -> dialog.SendMessageResponse
-	11, // 13: dialog.DialogService.GetDialogMessages:output_type -> dialog.GetDialogMessagesResponse
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
+	4,  // 5: dialog.DialogService.GetUserDialogs:input_type -> dialog.GetUserDialogsRequest
+	6,  // 6: dialog.DialogService.SendMessage:input_type -> dialog.SendMessageRequest
+	8,  // 7: dialog.DialogService.GetDialogMessages:input_type -> dialog.GetDialogMessagesRequest
+	3,  // 8: dialog.DialogService.CreateDialog:output_type -> dialog.CreateDialogResponse
+	5,  // 9: dialog.DialogService.GetUserDialogs:output_type -> dialog.GetUserDialogsResponse
+	7,  // 10: dialog.DialogService.SendMessage:output_type -> dialog.SendMessageResponse
+	9,  // 11: dialog.DialogService.GetDialogMessages:output_type -> dialog.GetDialogMessagesResponse
+	8,  // [8:12] is the sub-list for method output_type
+	4,  // [4:8] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -830,15 +706,15 @@ func file_messenger_dialog_proto_init() {
 	if File_messenger_dialog_proto != nil {
 		return
 	}
-	file_messenger_dialog_proto_msgTypes[6].OneofWrappers = []any{}
-	file_messenger_dialog_proto_msgTypes[10].OneofWrappers = []any{}
+	file_messenger_dialog_proto_msgTypes[4].OneofWrappers = []any{}
+	file_messenger_dialog_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_messenger_dialog_proto_rawDesc), len(file_messenger_dialog_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

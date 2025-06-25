@@ -8,7 +8,6 @@ option go_package = "pkg/messenger_dialog_api";
 
 service DialogService {
   rpc CreateDialog(CreateDialogRequest) returns (CreateDialogResponse);
-  rpc CheckDialog(CheckDialogRequest) returns (CheckDialogResponse);
   rpc GetUserDialogs(GetUserDialogsRequest) returns (GetUserDialogsResponse);
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
   rpc GetDialogMessages(GetDialogMessagesRequest) returns (GetDialogMessagesResponse);
@@ -40,16 +39,6 @@ message CreateDialogResponse {
   string dialog_name = 3;   // Название диалога
 } // если диалог уже создан, то возвращает его ID
 
-message CheckDialogRequest {
-  int32 user_id = 1;      // ID первого пользователя
-  int32 peer_id = 2;      // ID второго пользователя
-}
-
-message CheckDialogResponse {
-  bool exists = 1;        // статус, есть ли диалог
-  int32 dialog_id = 2;    // выведет 0, если диалога нет, если есть, то его ID
-}
-
 message GetUserDialogsRequest {
   int32 user_id = 1;    // ID пользователя
   optional int32 limit = 2;   // Сколько диалогов загрузить (опционально)
@@ -73,7 +62,6 @@ message SendMessageResponse {
 
 message GetDialogMessagesRequest {
   int32 dialog_id = 1;    // ID диалога
-  string login = 2;      // логин пользователя (для проверки доступа)
   optional int32 limit = 3;     // Сколько сообщение показать (опционально)
   optional int32 offset = 4;    // Сколько сообщений пропустить (опционально)
 }
