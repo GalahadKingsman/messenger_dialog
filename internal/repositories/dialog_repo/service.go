@@ -75,6 +75,22 @@ func (s *Repo) CheckDialog(userID, peerID int32) (int, string, error) {
 	return dialogID, dialogName, nil
 }
 
+func (r *Repo) GetPeerID(dialogID, userID int32) (int32, error) {
+	const q = `
+        SELECT user_id
+          FROM users_dialogs_links
+         WHERE dialog_id = $1
+           AND user_id <> $2
+         LIMIT 1
+    `
+	var peerID int32
+	err := r.db.QueryRow(q, dialogID, userID).Scan(&peerID)
+	if err != nil {
+		return 0, fmt.Errorf("GetPeerID: %w", err)
+	}
+	return peerID, nil
+}
+
 func (r *Repo) GetUserDialogs(userID int32, limit, offset int32) ([]*models.DialogInfo, error) {
 	query := `
 		SELECT 

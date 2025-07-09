@@ -1,3 +1,5 @@
+github.com/GalahadKingsman/messenger_notifications v0.0.0-20250705102652-f400ff15b146 h1:LXCasZB+R/PdWBAM1c8+FQ78/kMJCCSOg4KdwksOd24=
+github.com/GalahadKingsman/messenger_notifications v0.0.0-20250705102652-f400ff15b146/go.mod h1:UsxQwbNF/CJVWgJAKnCZOI+zgTLAcikjBcqB1E1iaOw=
 github.com/caarlos0/env/v11 v11.3.1 h1:cArPWC15hWmEt+gWk7YBi7lEXTXCvpaSdCiZE2X5mCA=
 github.com/caarlos0/env/v11 v11.3.1/go.mod h1:qupehSf/Y0TUTsxKywqRt/vJjN5nz6vauiYEUUr8P4U=
 github.com/go-logr/logr v1.4.2 h1:6pFjapn8bFcIbiKo3XT4j/BhANplGihG6tvd+8rYgrY=

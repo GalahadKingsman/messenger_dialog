@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/GalahadKingsman/messenger_notifications v0.0.0-20250705102652-f400ff15b146 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
