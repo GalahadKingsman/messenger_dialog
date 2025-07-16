@@ -2,14 +2,14 @@ package config
 
 // Config содержит всю конфигурацию приложения
 type DBConfig struct {
-	Host     string `env:"HOST"`
-	Port     string `env:"PORT"`
-	User     string `env:"USER"`
-	Password string `env:"PASSWORD"`
-	Name     string `env:"NAME"`
+	Host     string `env:"DB_HOST"`
+	Port     string `env:"DB_PORT"`
+	User     string `env:"DB_USER"`
+	Password string `env:"DB_PASSWORD"`
+	Name     string `env:"DB_NAME"`
 }
 
 type Config struct {
-	DB       DBConfig `envPrefix:"DB_"`
-	GRPCPort int      `env:"GRPC_PORT"`
+	DB       DBConfig
+	GRPCPort int `env:"GRPC_PORT"`
 }
