@@ -1,7 +1,6 @@
 package dialogservice
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -11,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
-	"net/http"
+	"time"
 )
 
 func (s *Service) SendMessage(ctx context.Context, req *pb.SendMessageRequest) (*pb.SendMessageResponse, error) {
@@ -38,19 +37,23 @@ func (s *Service) SendMessage(ctx context.Context, req *pb.SendMessageRequest) (
 	} else {
 
 		notif := models.Notification{
-			From:    fmt.Sprintf("%d", req.UserId),
-			Message: req.Text,
+			From:     fmt.Sprintf("%d", req.UserId),
+			Message:  req.Text,
+			DialogID: req.DialogId,
 		}
 		payload, _ := json.Marshal(notif)
 		channel := fmt.Sprintf("notifications:%d", peerID)
 
-		go func() {
-			if err := s.rdb.Publish(ctx, channel, payload).Err(); err != nil {
+		go func(ch string, data []byte) {
+			ctxPub, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			if err := s.rdb.Publish(ctxPub, ch, data).Err(); err != nil {
 				log.Printf("[Dialog] Redis publish error: %v", err)
 			} else {
-				log.Printf("[Dialog] Published to %s payload=%s", channel, string(payload))
+				log.Printf("[Dialog] Published to %s payload=%s", ch, string(data))
 			}
-		}()
+		}(channel, payload)
 	}
 
 	// Формируем ответ с временем из БД
